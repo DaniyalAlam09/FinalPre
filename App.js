@@ -7,6 +7,7 @@ import CreateRecord from "./Components/CreateRecord";
 import Delete from "./Components/Delete";
 import getAlldata from "./Components/GetAllData";
 import Update from "./Components/Update";
+import Filters from "./Components/Filters";
 
 
 const Stack = createNativeStackNavigator();
@@ -20,6 +21,7 @@ export default function Crud() {
         <Stack.Screen name="Delete" component={Delete} />
         <Stack.Screen name="getAlldata" component={getAlldata} />
         <Stack.Screen name="Update" component={Update} />
+        <Stack.Screen name="Filters" component={Filters} />
       </Stack.Navigator>
     </NavigationContainer>
   );

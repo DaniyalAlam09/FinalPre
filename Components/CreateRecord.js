@@ -9,13 +9,19 @@ import {
 import { db } from "./config";
 
 export default function CreateRecord() {
-  const [username, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [Name, setName] = useState("");
+  const [Location, setLocation] = useState("");
+  const [Rank, setRank] = useState("");
+  const [Fees, setFees] = useState("");
+  const [Merit, setMerit] = useState("");
 
   function create() {
-    addDoc(collection(db, "users"), {
-      username: username,
-      email: email,
+    addDoc(collection(db, "Universities"), {
+      Name: Name,
+      Location: Location,
+      Rank:Rank,
+      Fees:Fees,
+      Merit:Merit
     })
       .then(() => {
         // Data saved successfully!
@@ -32,21 +38,45 @@ export default function CreateRecord() {
       <h1>Get Register</h1>
 
       <TextInput
-        value={username}
-        onChangeText={(username) => {
-          setName(username);
+        style={styles.input}
+        placeholder="Name"
+        onChangeText={(Name) => {
+          setName(Name);
         }}
-        placeholder="Username"
-        style={styles.textBoxes}
-      ></TextInput>
+        value={Name}
+      />
       <TextInput
-        value={email}
-        onChangeText={(email) => {
-          setEmail(email);
+        style={styles.input}
+        placeholder="Fees"
+        onChangeText={(Fees) => {
+          setFees(Fees);
         }}
-        placeholder="Email"
-        style={styles.textBoxes}
-      ></TextInput>
+        value={Fees}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Merit"
+        onChangeText={(Merit) => {
+          setMerit(Merit);
+        }}
+        value={Merit}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Rank"
+        onChangeText={(Rank) => {
+          setRank(Rank);
+        }}
+        value={Rank}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Location"
+        onChangeText={(Location) => {
+          setLocation(Location);
+        }}
+        value={Location}
+      />
 
       <button
         style={{
@@ -62,7 +92,7 @@ export default function CreateRecord() {
         }}
         onClick={create}
       >
-        Refresh Data{" "}
+        Sumbit{" "}
       </button>
     </View>
   );
@@ -85,6 +115,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
   },
   
 });

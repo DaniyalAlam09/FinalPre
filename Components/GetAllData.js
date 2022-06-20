@@ -7,19 +7,29 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-// import { TextInput } from "react-native-web";
 import { useState } from "react/cjs/react.development";
 import React, { useEffect } from "react";
-import { collection, getDocs, query, where, index, orderBy } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  index,
+  orderBy,
+} from "firebase/firestore";
 import { db } from "./config";
+import Filters from "./Filters";
 
-export default function getAlldata() {
+export default function getAlldata({navigation}) {
   const uniRef = collection(db, "Universities");
-  
+
   const [data, setData] = useState([]);
   const [masterdata, setMasterData] = useState("");
   const [search, setSearch] = useState("");
   const [fee, setFee] = useState("");
+  const moveFilter = () => {
+    navigation.navigate(Filters);
+  };
 
   const get = () =>
     getDocs(collection(db, "Universities")).then((docSnap) => {
@@ -50,15 +60,6 @@ export default function getAlldata() {
     }
   };
 
-  const sortbyfee = () => {
-    var c;
-    fee.sort(function (a, b) {
-      return (c = a.fee - b.fee);
-    });
-    console.log(fee);
-    console.log(this.setState({ universities: fee }));
-  };
-
   function getDataWithQuery() {
     getDocs(
       query(collection(db, "Universities"), where("Location", "==", "Lahore"))
@@ -85,9 +86,20 @@ export default function getAlldata() {
     });
   }
 
-  function sortByRank (){
+  function sortByRank() {
+    getDocs(query(uniRef, orderBy("Rank", "asc"))).then((docSnap) => {
+      let users = [];
+      docSnap.forEach((doc) => {
+        users.push({ ...doc.data(), id: doc.id });
+      });
+      setData(users);
+      console.log(users);
+    });
+  }
+
+  function sortbyfee() {
     getDocs(
-    query(uniRef, orderBy("Rank", "asc"))
+      query(uniRef, where("Fees", ">", "30000"), where("Fees", "<", "70000"))
     ).then((docSnap) => {
       let users = [];
       docSnap.forEach((doc) => {
@@ -97,10 +109,9 @@ export default function getAlldata() {
       console.log(users);
     });
   }
-  function sortByMerit (){
-    getDocs(
-    query(uniRef, orderBy("Merit", "asc"))
-    ).then((docSnap) => {
+
+  function sortByMerit() {
+    getDocs(query(uniRef, orderBy("Merit", "asc"))).then((docSnap) => {
       let users = [];
       docSnap.forEach((doc) => {
         users.push({ ...doc.data(), id: doc.id });
@@ -129,76 +140,92 @@ export default function getAlldata() {
               />
             </View>
             <TouchableOpacity
-              style={{
-                width: 150,
-                backgroundColor: "#2196F3",
-                height: 30,
-                borderRadius: 5,
-                // justifyContent: "center",
-                alignItems: "center",
-                // alignSelf: "center",
-                marginTop: 30,
-                // marginLeft: 40,
-              }}
-              onPress={getDataWithQuery}
-            >
-              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>
-                Uni in Lahore
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 150,
-                backgroundColor: "#2196F3",
-                height: 30,
-                borderRadius: 5,
-                // justifyContent: "center",
-                alignItems: "center",
-                // alignSelf: "center",
-                marginTop: 30,
-                // marginLeft: 40,
-              }}
-              onPress={sortByRank}
-            >
-              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>
-                Rank
-              </Text>
-            </TouchableOpacity>
+                style={{
+                  width: 300,
+          backgroundColor: "#2196F3",
+          height: 30,
+          borderRadius: 5,
+          justifyContent: "center",
+          alignItems: "center",
+          alignSelf: "center",
+          marginTop: 30,
+          // marginLeft: 40,
+                }}
+                onPress={moveFilter}
+              >
+                <Text style={{ color: "black", fontSize: 15 }}>Filters</Text>
+              </TouchableOpacity>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                style={{
+                  width: 80,
+                  backgroundColor: "#E1E2E4",
+                  height: 30,
+                  borderRadius: 5,
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+                onPress={getDataWithQuery}
+              >
+                <Text style={{ color: "black", fontSize: 15 }}>Lahore</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  width: 80,
+                  backgroundColor: "#E1E2E4",
+                  height: 30,
+                  borderRadius: 5,
+                  alignItems: "center",
+                  marginTop: 10,
+                  marginLeft: 10,
+                }}
+                onPress={sortByRank}
+              >
+                <Text style={{ color: "black", fontSize: 15 }}>Rank</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                style={{
+                  width: 80,
+                  backgroundColor: "#E1E2E4",
+                  height: 30,
+                  borderRadius: 5,
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+                onPress={sortByMerit}
+              >
+                <Text style={{ color: "black", fontSize: 15 }}>Merit</Text>
+              </TouchableOpacity>
 
+              <TouchableOpacity
+                style={{
+                  width: 80,
+                  backgroundColor: "#E1E2E4",
+                  height: 30,
+                  borderRadius: 5,
+                  alignItems: "center",
+                  marginTop: 10,
+                  marginLeft: 10,
+                }}
+                onPress={sortbyfee}
+              >
+                <Text style={{ color: "black", fontSize: 15 }}>Fee</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
               style={{
-                width: 150,
-                backgroundColor: "#2196F3",
+                width: 120,
+                backgroundColor: "#E1E2E4",
                 height: 30,
                 borderRadius: 5,
-                // justifyContent: "center",
                 alignItems: "center",
-                // alignSelf: "center",
-                marginTop: 30,
-                // marginLeft: 40,
-              }}
-              onPress={sortByMerit}
-            >
-              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>
-                Merit
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={{
-                width: 150,
-                backgroundColor: "#2196F3",
-                height: 30,
-                borderRadius: 5,
-                // justifyContent: "center",
-                alignItems: "center",
-                // alignSelf: "center",
-                marginTop: 30,
-                // marginLeft: 40,
+                marginTop: 10,
               }}
               onPress={Admission}
             >
-              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>
+              <Text style={{ color: "black", fontSize: 15 }}>
                 Admission Open
               </Text>
             </TouchableOpacity>
@@ -246,19 +273,19 @@ export default function getAlldata() {
 const style = StyleSheet.create({
   container2: {
     flex: 1,
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: "red",
-    backgroundColor: "white",
-    width: 400,
-    justifyContent: "center",
-    alignSelf: "center",
-    marginTop: 50,
+    marginTop: 10,
+    borderWidth: 2,
+    borderColor: "black",
+    backgroundColor: "#F1FFFF",
+    width: 300,
+    // justifyContent: "center",
+    // alignSelf: "center",
+    marginTop: 10,
     flexDirection: "row",
   },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#FEFFB1",
     alignItems: "center",
   },
 
@@ -271,8 +298,8 @@ const style = StyleSheet.create({
     borderRadius: 10,
   },
   data: {
-    margin: 5,
-    fontSize: 19,
+    // margin: 5,
+    fontSize: 17,
     color: "black",
   },
 });
