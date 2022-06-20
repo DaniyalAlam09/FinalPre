@@ -1,20 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from "react-native";
 
-export default function App() {
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
+import Home from "./Components/Home";
+import CreateRecord from "./Components/CreateRecord";
+import Delete from "./Components/Delete";
+import getAlldata from "./Components/GetAllData";
+import Update from "./Components/Update";
+
+
+const Stack = createNativeStackNavigator();
+
+export default function Crud() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="CreateRecord" component={CreateRecord} />
+        <Stack.Screen name="Delete" component={Delete} />
+        <Stack.Screen name="getAlldata" component={getAlldata} />
+        <Stack.Screen name="Update" component={Update} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  textBoxes: {
+    width: "90%",
+    fontSize: 18,
+    padding: 12,
+    borderColor: "gray",
+    borderWidth: 0.2,
+    borderRadius: 10,
   },
 });
