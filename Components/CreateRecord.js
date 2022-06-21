@@ -101,7 +101,7 @@ export default function CreateRecord() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#FEFFB1",
   },
   textBoxes: {
     width: "90%",

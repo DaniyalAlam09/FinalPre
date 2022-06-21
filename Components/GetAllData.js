@@ -6,6 +6,8 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
+  ScrollView,
+  Image
 } from "react-native";
 import { useState } from "react/cjs/react.development";
 import React, { useEffect } from "react";
@@ -20,13 +22,14 @@ import {
 import { db } from "./config";
 import Filters from "./Filters";
 
-export default function getAlldata({navigation}) {
+export default function getAlldata({ navigation }) {
   const uniRef = collection(db, "Universities");
 
   const [data, setData] = useState([]);
   const [masterdata, setMasterData] = useState("");
   const [search, setSearch] = useState("");
   const [fee, setFee] = useState("");
+  const [text, setText] = useState("");
   const moveFilter = () => {
     navigation.navigate(Filters);
   };
@@ -100,6 +103,7 @@ export default function getAlldata({navigation}) {
   function sortbyfee() {
     getDocs(
       query(uniRef, where("Fees", ">", "30000"), where("Fees", "<", "70000"))
+      // query(uniRef, where("Fees", ">", `${text}`), where("Fees", "<", "70000"))
     ).then((docSnap) => {
       let users = [];
       docSnap.forEach((doc) => {
@@ -107,6 +111,7 @@ export default function getAlldata({navigation}) {
       });
       setData(users);
       console.log(users);
+      console.log("mytxt", text);
     });
   }
 
@@ -120,42 +125,45 @@ export default function getAlldata({navigation}) {
       console.log(users);
     });
   }
+  console.log(text);
 
   return (
     <View style={style.container}>
       <h1>Registered Records</h1>
-
       <FlatList
         ListHeaderComponent={
-          <View>
-            <View>
-              <TextInput
-                placeholderTextColor="grey"
-                placeholder="Search Here"
-                value={search}
-                onChangeText={(text) => {
-                  searchFilter(text);
-                }}
-                // style={styles.searchBar}
-              />
-            </View>
-            <TouchableOpacity
+          <ScrollView horizontal={true}>
+            {/* <View>
+            <TextInput
+              placeholderTextColor="grey"
+              placeholder="Search Here"
+              value={search}
+              onChangeText={(text) => {
+                searchFilter(text);
+              }}
+              // style={styles.searchBar}
+            />
+          </View> */}
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <TouchableOpacity
                 style={{
-                  width: 300,
-          backgroundColor: "#2196F3",
-          height: 30,
-          borderRadius: 5,
-          justifyContent: "center",
-          alignItems: "center",
-          alignSelf: "center",
-          marginTop: 30,
-          // marginLeft: 40,
+                  width: 80,
+                  backgroundColor: "#2196F3",
+                  height: 30,
+                  borderRadius: 5,
+                  alignItems: "center",
+                  marginTop: 10,
                 }}
                 onPress={moveFilter}
               >
                 <Text style={{ color: "black", fontSize: 15 }}>Filters</Text>
               </TouchableOpacity>
-            <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 style={{
                   width: 80,
@@ -164,6 +172,7 @@ export default function getAlldata({navigation}) {
                   borderRadius: 5,
                   alignItems: "center",
                   marginTop: 10,
+                  marginLeft: 10,
                 }}
                 onPress={getDataWithQuery}
               >
@@ -183,8 +192,7 @@ export default function getAlldata({navigation}) {
               >
                 <Text style={{ color: "black", fontSize: 15 }}>Rank</Text>
               </TouchableOpacity>
-            </View>
-            <View style={{ flexDirection: "row" }}>
+
               <TouchableOpacity
                 style={{
                   width: 80,
@@ -193,6 +201,7 @@ export default function getAlldata({navigation}) {
                   borderRadius: 5,
                   alignItems: "center",
                   marginTop: 10,
+                  marginLeft: 10,
                 }}
                 onPress={sortByMerit}
               >
@@ -213,29 +222,39 @@ export default function getAlldata({navigation}) {
               >
                 <Text style={{ color: "black", fontSize: 15 }}>Fee</Text>
               </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{
+                  width: 80,
+                  backgroundColor: "#E1E2E4",
+                  height: 30,
+                  borderRadius: 5,
+                  alignItems: "center",
+                  marginTop: 10,
+                  marginLeft: 10,
+                }}
+                onPress={Admission}
+              >
+                <Text style={{ color: "black", fontSize: 15 }}>Open</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={{
-                width: 120,
-                backgroundColor: "#E1E2E4",
-                height: 30,
-                borderRadius: 5,
-                alignItems: "center",
-                marginTop: 10,
-              }}
-              onPress={Admission}
-            >
-              <Text style={{ color: "black", fontSize: 15 }}>
-                Admission Open
-              </Text>
-            </TouchableOpacity>
-          </View>
+          </ScrollView>
         }
+      />
+
+      <FlatList
         data={data}
         keyExtractor={({ id }, db) => id}
         renderItem={({ item }) => (
           <View>
+              
+
             <View style={style.container2}>
+            <Image
+                style={style.image}
+                source={require("./COMSATS.jpg")}
+              />
+
               <View>
                 <Text style={style.data}>
                   {" "}
@@ -277,17 +296,15 @@ const style = StyleSheet.create({
     borderWidth: 2,
     borderColor: "black",
     backgroundColor: "#F1FFFF",
-    width: 300,
-    // justifyContent: "center",
-    // alignSelf: "center",
+    width: 500,
     marginTop: 10,
     flexDirection: "row",
   },
   container: {
-    flex: 1,
     backgroundColor: "#FEFFB1",
-    alignItems: "center",
+    // alignItems: "center",
   },
+
 
   textBoxes: {
     width: "90%",
@@ -298,8 +315,13 @@ const style = StyleSheet.create({
     borderRadius: 10,
   },
   data: {
-    // margin: 5,
+    marginLeft:20,
     fontSize: 17,
     color: "black",
+  },
+  image: {
+    width: 100,
+    height: 100,
+    marginTop: 40,
   },
 });
